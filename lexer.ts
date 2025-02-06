@@ -10,8 +10,8 @@ const TokenType = {
   EQUALS: "Equals",
   OPEN_PARENTHESIS: "Open Parenthesis",
   CLOSE_PARENTHESIS: "Close Parenthesis",
-  BINARY_OPERATOR: "BINARY_OPERATOR",
-  SEMICOLON: "SEMICOLON",
+  BINARY_OPERATOR: "Binary Operator",
+  SEMICOLON: "Semicolon",
 } as const;
 
 type TokenType = (typeof TokenType)[keyof typeof TokenType];
@@ -20,12 +20,7 @@ const KEYWORDS: Record<string, TokenType> = {
   let: TokenType.LET,
 };
 
-const inputCode = "let nums = (50 * (45 / (65 + 4)));";
-for (const i of tokenize(inputCode)) {
-  console.log(i);
-}
-
-function tokenize(input: string): Token[] {
+export function tokenize(input: string): Token[] {
   const res: Token[] = [];
   const chars = input.split("");
   while (chars.length > 0) {
