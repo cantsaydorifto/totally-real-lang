@@ -3,7 +3,7 @@ interface Token {
   type: TokenType;
 }
 
-const TokenType = {
+const TOKEN_TYPE = {
   NUMBER: "Number",
   IDENTIFIER: "Identifier",
   LET: "Let",
@@ -12,12 +12,15 @@ const TokenType = {
   CLOSE_PARENTHESIS: "Close Parenthesis",
   BINARY_OPERATOR: "Binary Operator",
   SEMICOLON: "Semicolon",
+  EOF: "End Of File",
 } as const;
 
-type TokenType = (typeof TokenType)[keyof typeof TokenType];
+type TokenType = keyof typeof TOKEN_TYPE;
+
+type TokenVals = (typeof TOKEN_TYPE)[TokenType];
 
 const KEYWORDS: Record<string, TokenType> = {
-  let: TokenType.LET,
+  let: "LET",
 };
 
 export function tokenize(input: string): Token[] {
@@ -29,26 +32,26 @@ export function tokenize(input: string): Token[] {
       continue;
     }
     if (chars[0] == "(") {
-      res.push(createToken(chars.shift()!, TokenType.OPEN_PARENTHESIS));
+      res.push(createToken(chars.shift()!, "OPEN_PARENTHESIS"));
     } else if (chars[0] == ")") {
-      res.push(createToken(chars.shift()!, TokenType.CLOSE_PARENTHESIS));
+      res.push(createToken(chars.shift()!, "CLOSE_PARENTHESIS"));
     } else if (
       chars[0] == "+" ||
       chars[0] == "-" ||
       chars[0] == "*" ||
       chars[0] == "/"
     ) {
-      res.push(createToken(chars.shift()!, TokenType.BINARY_OPERATOR));
+      res.push(createToken(chars.shift()!, "BINARY_OPERATOR"));
     } else if (chars[0] == "=") {
-      res.push(createToken(chars.shift()!, TokenType.EQUALS));
+      res.push(createToken(chars.shift()!, "EQUALS"));
     } else if (chars[0] == ";") {
-      res.push(createToken(chars.shift()!, TokenType.SEMICOLON));
+      res.push(createToken(chars.shift()!, "SEMICOLON"));
     } else if (isDigit(chars[0])) {
       let num = "";
       while (chars.length > 0 && isDigit(chars[0])) {
         num += chars.shift();
       }
-      res.push(createToken(num, TokenType.NUMBER));
+      res.push(createToken(num, "NUMBER"));
     } else if (isChar(chars[0])) {
       let identifierToken = "";
       while (chars.length > 0 && isChar(chars[0])) {
@@ -56,7 +59,7 @@ export function tokenize(input: string): Token[] {
       }
       if (identifierToken in KEYWORDS) {
         res.push(createToken(identifierToken, KEYWORDS[identifierToken]));
-      } else res.push(createToken(identifierToken, TokenType.IDENTIFIER));
+      } else res.push(createToken(identifierToken, "IDENTIFIER"));
     } else {
       console.log(`Unrecognized Char : ${chars[0]}`);
       console.log(res);
