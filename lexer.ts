@@ -66,6 +66,7 @@ export function tokenize(input: string): Token[] {
       throw Error(`Unrecognized Char : ${chars[0]}`);
     }
   }
+  res.push(createToken("", "EOF"));
   return res;
 }
 
