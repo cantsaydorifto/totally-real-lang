@@ -1,4 +1,4 @@
-interface Token {
+export interface Token {
   value: string;
   type: TokenType;
 }
@@ -31,20 +31,21 @@ export function tokenize(input: string): Token[] {
       chars.shift();
       continue;
     }
-    if (chars[0] == "(") {
+    if (chars[0] === "(") {
       res.push(createToken(chars.shift()!, "OPEN_PARENTHESIS"));
-    } else if (chars[0] == ")") {
+    } else if (chars[0] === ")") {
       res.push(createToken(chars.shift()!, "CLOSE_PARENTHESIS"));
     } else if (
-      chars[0] == "+" ||
-      chars[0] == "-" ||
-      chars[0] == "*" ||
-      chars[0] == "/"
+      chars[0] === "+" ||
+      chars[0] === "-" ||
+      chars[0] === "*" ||
+      chars[0] === "/" ||
+      chars[0] === "%"
     ) {
       res.push(createToken(chars.shift()!, "BINARY_OPERATOR"));
-    } else if (chars[0] == "=") {
+    } else if (chars[0] === "=") {
       res.push(createToken(chars.shift()!, "EQUALS"));
-    } else if (chars[0] == ";") {
+    } else if (chars[0] === ";") {
       res.push(createToken(chars.shift()!, "SEMICOLON"));
     } else if (isDigit(chars[0])) {
       let num = "";
