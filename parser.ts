@@ -83,14 +83,16 @@ export class Parser {
         const val = this.parseExpression(); // EXP
         const closing = this.eat(); // )
         if (closing.type !== "CLOSE_PARENTHESIS") {
-          throw Error(
+          console.error(
             `Unexpected Token Found - Expected Closing Paranthesis ')' `
           );
+          Deno.exit(1);
         }
         return val;
       }
       default:
-        throw Error(`Unexpected Token Found : ${this.peek()}`);
+        console.error(`Unexpected Token Found : ${this.peek()}`);
+        Deno.exit(1);
     }
   }
 }
