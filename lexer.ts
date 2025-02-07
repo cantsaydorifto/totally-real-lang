@@ -13,6 +13,7 @@ const TOKEN_TYPE = {
   BINARY_OPERATOR: "Binary Operator",
   SEMICOLON: "Semicolon",
   EOF: "End Of File",
+  NULL: "Null",
 } as const;
 
 type TokenType = keyof typeof TOKEN_TYPE;
@@ -21,6 +22,7 @@ type TokenVals = (typeof TOKEN_TYPE)[TokenType];
 
 const KEYWORDS: Record<string, TokenType> = {
   let: "LET",
+  null: "NULL",
 };
 
 export function tokenize(input: string): Token[] {
@@ -31,40 +33,47 @@ export function tokenize(input: string): Token[] {
       chars.shift();
       continue;
     }
-    if (chars[0] === "(") {
-      res.push(createToken(chars.shift()!, "OPEN_PARENTHESIS"));
-    } else if (chars[0] === ")") {
-      res.push(createToken(chars.shift()!, "CLOSE_PARENTHESIS"));
-    } else if (
-      chars[0] === "+" ||
-      chars[0] === "-" ||
-      chars[0] === "*" ||
-      chars[0] === "/" ||
-      chars[0] === "%"
-    ) {
-      res.push(createToken(chars.shift()!, "BINARY_OPERATOR"));
-    } else if (chars[0] === "=") {
-      res.push(createToken(chars.shift()!, "EQUALS"));
-    } else if (chars[0] === ";") {
-      res.push(createToken(chars.shift()!, "SEMICOLON"));
-    } else if (isDigit(chars[0])) {
+    if (isDigit(chars[0])) {
       let num = "";
       while (chars.length > 0 && isDigit(chars[0])) {
         num += chars.shift();
       }
       res.push(createToken(num, "NUMBER"));
-    } else if (isChar(chars[0])) {
+      continue;
+    }
+    if (isChar(chars[0])) {
       let identifierToken = "";
       while (chars.length > 0 && isChar(chars[0])) {
         identifierToken += chars.shift();
       }
-      if (identifierToken in KEYWORDS) {
-        res.push(createToken(identifierToken, KEYWORDS[identifierToken]));
-      } else res.push(createToken(identifierToken, "IDENTIFIER"));
-    } else {
-      console.log(`Unrecognized Char : ${chars[0]}`);
-      console.log(res);
-      throw Error(`Unrecognized Char : ${chars[0]}`);
+      const tokType =
+        identifierToken in KEYWORDS ? KEYWORDS[identifierToken] : "IDENTIFIER";
+      res.push(createToken(identifierToken, tokType));
+      continue;
+    }
+    switch (chars[0]) {
+      case "(":
+        res.push(createToken(chars.shift()!, "OPEN_PARENTHESIS"));
+        break;
+      case ")":
+        res.push(createToken(chars.shift()!, "CLOSE_PARENTHESIS"));
+        break;
+      case "+":
+      case "-":
+      case "*":
+      case "/":
+      case "%":
+        res.push(createToken(chars.shift()!, "BINARY_OPERATOR"));
+        break;
+      case "=":
+        res.push(createToken(chars.shift()!, "EQUALS"));
+        break;
+      case ";":
+        res.push(createToken(chars.shift()!, "SEMICOLON"));
+        break;
+      default:
+        console.error(`Error - Unrecognized Char : ${chars[0]}`);
+        Deno.exit(1);
     }
   }
   res.push(createToken("", "EOF"));
