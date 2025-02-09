@@ -4,7 +4,12 @@ export interface Program {
 }
 
 export interface Statement {
-  type: "NumberLiteral" | "Identifier" | "BinaryExpression";
+  type:
+    | "Program"
+    | "NumberLiteral"
+    | "Identifier"
+    | "BinaryExpression"
+    | "NullLiteral";
 }
 
 export interface Expression extends Statement {}
@@ -24,4 +29,9 @@ export interface Identifier extends Expression {
 export interface NumberLiteral extends Expression {
   type: "NumberLiteral";
   value: number;
+}
+
+export interface NullLiteral extends Expression {
+  type: "NullLiteral";
+  value: "NULL";
 }

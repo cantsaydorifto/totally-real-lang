@@ -73,7 +73,7 @@ export function tokenize(input: string): Token[] {
         break;
       default:
         console.error(`Error - Unrecognized Char : ${chars[0]}`);
-        Deno.exit(1);
+        Deno.exit(0);
     }
   }
   res.push(createToken("", "EOF"));

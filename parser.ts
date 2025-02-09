@@ -1,4 +1,4 @@
-import type { Expression, Program, Statement } from "./ast.ts";
+import type { Expression, NullLiteral, Program, Statement } from "./ast.ts";
 import { BinaryExpression } from "./ast.ts";
 import { NumberLiteral } from "./ast.ts";
 import { Identifier } from "./ast.ts";
@@ -86,13 +86,16 @@ export class Parser {
           console.error(
             `Unexpected Token Found - Expected Closing Paranthesis ')' `
           );
-          Deno.exit(1);
+          Deno.exit(0);
         }
         return val;
       }
+      case "NULL":
+        this.eat();
+        return { type: "NullLiteral", value: "NULL" } as NullLiteral;
       default:
         console.error(`Unexpected Token Found : ${this.peek()}`);
-        Deno.exit(1);
+        Deno.exit(0);
     }
   }
 }
